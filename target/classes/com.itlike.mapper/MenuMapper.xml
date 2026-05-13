@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itlike.mapper.MenuMapper">
+
+  <resultMap id="BaseResultMap" type="com.itlike.domain.Menu">
+    <id column="id" property="id" />
+    <result column="text" property="text" />
+    <result column="url" property="url" />
+
+    <association property="parent" javaType="com.itlike.domain.Menu" columnPrefix="m_">
+      <result property="id" column="id"/>
+      <result property="text" column="text"/>
+      <result property="url" column="url"/>
+    </association>
+
+    <association property="permission" javaType="com.itlike.domain.Permission">
+      <result property="pid" column="pid"/>
+      <result property="pname" column="pname"/>
+      <result property="presource" column="presource"/>
+    </association>
+
+    <collection property="children" ofType="com.itlike.domain.Menu" select="listChildMenu" column="id"/>
+  </resultMap>
+
+  <select id="getTreeData" resultMap="BaseResultMap">
+    select m.id, m.`text`, m.`url`, m.parent_id, m.permission_id, p.pid, p.pname, p.presource 
+    from menu as m
+    LEFT JOIN permission as p on m.permission_id = p.pid 
+    where m.parent_id is null
+  </select>
+
+  <select id="listChildMenu" resultMap="BaseResultMap">
+    select m.id, m.`text`, m.`url`, m.parent_id, m.permission_id, p.pid, p.pname, p.presource 
+    from menu as m
+    LEFT JOIN permission as p on m.permission_id = p.pid 
+    where m.parent_id = #{id}
+  </select>
+
+  <insert id="saveMenu">
+      insert into menu(id, `text`, `url`, parent_id) 
+      values (#{id}, #{text}, #{url}, #{parent.id})
+  </insert>
+
+  <delete id="deleteByPrimaryKey">
+    delete from menu where id = #{id}
+  </delete>
+
+  <update id="updateByPrimaryKey">
+    update menu
+    set `text` = #{text},
+      `url` = #{url},
+      parent_id = #{parent.id}
+    where id = #{id}
+  </update>
+
+  <update id="updateMenuRel">
+    update menu set parent_id = null where parent_id = #{id}
+  </update>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select id, `text`, `url`, parent_id
+    from menu
+    where id = #{id}
+  </select>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    SELECT
+    m1.id,
+    m1.`text`,
+    m1.`url`,
+    m2.id as m_id,
+    m2.`text` as m_text,
+    m2.`url` as m_url
+    from menu as m1
+    LEFT JOIN menu as m2 ON m1.parent_id = m2.id
+    order by m1.id desc
+  </select>
+
+  <select id="selectParentId" resultType="java.lang.Long">
+    select parent_id from menu where id = #{id}
+  </select>
+
+</mapper>
