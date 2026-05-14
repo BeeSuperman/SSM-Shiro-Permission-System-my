@@ -13,7 +13,7 @@
 
 > 一個從零手刻的企業後台管理系統，深度整合 Spring MVC + MyBatis + Apache Shiro，實現員工管理、動態選單、角色權限指派與 AOP 操作日誌等完整功能。
 
-**[🌐 線上展示 Demo]([https://beesuperman.github.io/PromissionPro-demo/](https://beesuperman.github.io/SSM-Shiro-Permission-System-my-frontend/))** 　
+**[🌐 線上展示 Demo](https://beesuperman.github.io/SSM-Shiro-Permission-System-my-frontend/)** 　
 
 </div>
 
